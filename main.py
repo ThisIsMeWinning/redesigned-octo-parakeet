@@ -1,6 +1,7 @@
 import pygame
 import sys
 import random
+import pickle
 from pygame.locals import *
 
 TILESIZE = 32
@@ -29,6 +30,18 @@ textures = {
     COAL: pygame.image.load('resources\coal.png')
 }
 
+
+def do_save():
+    saveGame = open('save.txt', 'wb')
+    saveValues = inventory
+    pickle.dump(saveValues, saveGame)
+    saveGame.close()
+
+def do_load():
+    loadGame = open('save.txt', 'rb')
+    loadValues = pickle.load(loadGame)
+    loadGame.close()
+
 inventory = {
     DIRT: 0,
     GRASS: 0,
@@ -51,7 +64,7 @@ pygame.display.set_caption('2D Game')
 for rw in range(MAPHEIGHT):
     for cl in range(MAPWIDTH):
         random.seed()
-        randomNumber = random.randint(0,15)
+        randomNumber = random.randint(0, 15)
         if randomNumber == 0:
             tile = COAL
         elif randomNumber == 1 or randomNumber == 2:
@@ -65,6 +78,7 @@ for rw in range(MAPHEIGHT):
 while True:
     for event in pygame.event.get():
         if event.type == QUIT:
+            do_save()
             pygame.quit()
             sys.exit()
 
