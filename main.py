@@ -1,6 +1,7 @@
 import pygame
 import sys
 import random
+from noise import pnoise2
 from pygame.locals import *
 
 TILESIZE = 32
@@ -28,6 +29,9 @@ textures = {
     COAL: pygame.image.load('resources\coal.png')
 }
 
+PLAYER = pygame.image.load('resources\player.png')
+playerPos = [0, 0]
+
 tilemap = [[DIRT for w in range(MAPWIDTH)] for h in range(MAPHEIGHT)]
 
 pygame.init()
@@ -37,6 +41,7 @@ pygame.display.set_caption('2D Game')
 
 for rw in range(MAPHEIGHT):
     for cl in range(MAPWIDTH):
+        random.seed()
         randomNumber = random.randint(0,15)
         if randomNumber == 0:
             tile = COAL
@@ -53,9 +58,19 @@ while True:
         if event.type == QUIT:
             pygame.quit()
             sys.exit()
+        elif event.type == KEYDOWN:
+            if event.key == K_RIGHT and playerPos[0] < MAPWIDTH - 1:
+                playerPos[0] += 1
+            if event.key == K_LEFT and playerPos[0] > 0:
+                playerPos[0] -= 1
+            if event.key == K_UP and playerPos[1] > 0:
+                playerPos[1] -= 1
+            if event.key == K_DOWN and playerPos[1] < MAPHEIGHT - 1:
+                playerPos[1] += 1
 
     for row in range(MAPHEIGHT):
         for column in range(MAPWIDTH):
             DISPLAY.blit(textures[tilemap[row][column]], (column*TILESIZE, row*TILESIZE, TILESIZE, TILESIZE))
+            DISPLAY.blit(PLAYER, (playerPos[0]*TILESIZE, playerPos[1]*TILESIZE))
 
     pygame.display.update()
